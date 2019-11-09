@@ -73,6 +73,21 @@ for k in tmp:
 print(happy)
 print(len(happy))
 
+header = "country,happyness index score,gdp per capita, social support, healthy life expectancy, freedom to make life choices, generosity, perception of corruption, population\n"
+
+f = open('data.csv','w+')
+f.write(header)
+for k in happy.keys():
+    f.write(k+","+",".join(map(str,happy[k]))+"\n")
+f.close()
+
+
+
+
+
+
+
+
 
 
 
