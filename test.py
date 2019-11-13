@@ -9,10 +9,11 @@ from bs4 import BeautifulSoup
 
 happy_ind = 'https://en.wikipedia.org/wiki/World_Happiness_Report'
 pop_ind = 'https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population'
+countries_europe = 'https://en.wikipedia.org/wiki/List_of_European_countries_by_population'
 
 t1 = requests.get(happy_ind).text
 t2 = requests.get(pop_ind).text
-
+t3 = requests.get(countries_europe).text
 
 soup = BeautifulSoup(t1,"lxml")
 #print(soup.prettify())
@@ -61,6 +62,13 @@ for i in l2:
 print(happy)
 print(happy['cambodia'])
 
+
+
+
+print(happy)
+print(len(happy))
+
+
 tmp = []
 for k in happy.keys():
     if len(happy[k]) < 8:
@@ -70,10 +78,35 @@ for k in tmp:
     del happy[k]
 
 
-print(happy)
-print(len(happy))
+#### in europe?
 
-header = "country,happyness index score,gdp per capita, social support, healthy life expectancy, freedom to make life choices, generosity, perception of corruption, population\n"
+soup3 = BeautifulSoup(t3,'lxml')
+##soup.find(lambda tag:tag.name=="table" and "Country" in tag.html.text)
+table3 = soup3.find('table',{'class':'sortable'})
+l3 = table3.find_all('tr')
+
+for k in happy.keys():
+    happy[k].append(False)
+
+for i in l3:
+    tds = i.find_all('td')
+    if len(tds) < 5:
+        continue
+    if tds[1].a is None:
+        continue
+    print(tds[1].a.text)
+    country = tds[1].a.text.lower().strip()
+    if country in happy:
+        happy[country][-1] = True
+    else:
+        print("WARNING",country)
+
+###
+
+
+
+
+header = "country,happyness index score,gdp per capita, social support, healthy life expectancy, freedom to make life choices, generosity, perception of corruption, population, in europe\n"
 
 f = open('data.csv','w+')
 f.write(header)
